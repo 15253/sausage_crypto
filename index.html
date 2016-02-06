@@ -15,7 +15,7 @@
                 post[kv.name] = kv.value;
             } );
             $.get(
-                    './crypt.php',
+                    'http://holman.org.uk/sausage_crypto/crypt.php',
                     post,
                     function ( data ) {
                         data = JSON.parse( data );
