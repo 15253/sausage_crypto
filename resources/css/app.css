@@ -1,0 +1,38 @@
+* {
+    font-family: "helvetica", Arial, sans-serif;
+}
+body {
+    background: #F2F2F2;
+    padding: 25px;
+}
+body * {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+body *:first-child {
+    margin-top: 0;
+}
+body *:last-child {
+    margin-bottom: 0;
+}
+form {}
+form * {
+    display: block;
+}
+label {
+    font-weight: 600;;
+}
+input[type="submit"], textarea {
+    width: 100%;
+    min-height: 1em;
+    height: 3.75em;
+    font-family: "Calibri", "Times New Roman", serif;
+    padding: 1em;
+    box-sizing: border-box;
+    overflow: hidden;
+    resize: none;
+}
+input[type="submit"] {}
+input[type="submit"][disabled] {
+    opacity: 0.5;
+}
