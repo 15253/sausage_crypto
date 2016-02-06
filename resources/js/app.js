@@ -4,14 +4,17 @@ var post = {},
     $encrypted,
     $submit;
 function handleSubmit( event ) {
+    alert("handling submit");
     event.preventDefault();
     $.each( $form.serializeArray(), function( _, kv ) {
         post[kv.name] = kv.value;
     } );
-    $.get(
+    $.post(
         'http://holman.org.uk/sausage_crypto/crypt.php',
         post,
         function ( data ) {
+            alert("data returned");
+            alert( data );
             data = JSON.parse( data );
             if ( data.success ) {
                 if ( typeof data[ 'encrypted' ] != "undefined" ) {
@@ -28,6 +31,7 @@ function handleSubmit( event ) {
             }
         }
     );
+    alert("handled submit");
     return false;
 }
 function check() {
