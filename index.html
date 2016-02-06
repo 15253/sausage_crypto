@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sausage Crypto</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        var post = {},
+            $form,
+            $decrypted,
+            $encrypted,
+            $submit;
+        function handleSubmit( event ) {
+            event.preventDefault();
+            $.each( $form.serializeArray(), function( _, kv ) {
+                post[kv.name] = kv.value;
+            } );
+            $.get(
+                    './crypt.php',
+                    post,
+                    function ( data ) {
+                        data = JSON.parse( data );
+                        if ( data.success ) {
+                            if ( typeof data[ 'encrypted' ] != "undefined" ) {
+                                $decrypted.val( '' );
+                                $encrypted.val( data[ 'encrypted'].replace( "\n/\n", "\n" ) );
+                            }
+                            if ( typeof data[ 'decrypted' ] != "undefined" ) {
+                                $encrypted.val( '' );
+                                $decrypted.val( data[ 'decrypted' ] );
+                            }
+                            check();
+                        } else {
+                            alert( data.error );
+                        }
+                    }
+            );
+            return false;
+        }
+        function check() {
+            $( 'textarea').each(
+                function ( i ) {
+                    var $this = $( this );
+                    $this.val( $this.val().replace( /\n\/\n/g, "\n" ) );
+                    var lines = $this.val().split(/\r*\n/).length,
+                        addtional = 2;
+                    var extra = ( lines + addtional ) * 0.25;
+                    $this.animate( { height: ( lines + addtional + extra ) + "em" }, 250 );
+                }
+            );
+            if ( $decrypted.val() == "" && $encrypted.val() == "" ) $submit.attr( "disabled", "disabled" );
+            else $submit.removeAttr( "disabled" );
+        }
+        $( document ).ready(
+                function() {
+                    $form = $( '#encrypt_decrypt' );
+                    $decrypted = $form.find( '#to_encrypt' ),
+                    $encrypted = $form.find( '#to_decrypt' ),
+                    $submit = $form.find( '#submit' );
+                    $( 'body' )
+                        .on(
+                            'submit',
+                            '#encrypt_decrypt',
+                            handleSubmit
+                        )
+                        .on(
+                            'keyup change',
+                            'textarea',
+                            function ( event ) {
+                                if ( $( this ).val() != '' ) $( 'textarea' ).not( this).val( '' );
+                                check();
+                            }
+                        )
+                        .on(
+                            'focus',
+                            'textarea',
+                            function ( event ) {
+                                $( this ).select();
+                            }
+                        );
+                    check();
+                }
+        );
+    </script>
+    <style>
+        * {
+            font-family: "helvetica", Arial, sans-serif;
+        }
+        body {
+            background: #F2F2F2;
+            padding: 25px;
+        }
+        body * {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        body *:first-child {
+            margin-top: 0;
+        }
+        body *:last-child {
+            margin-bottom: 0;
+        }
+        form {}
+        form * {
+            display: block;
+        }
+        label {
+            font-weight: 600;;
+        }
+        input[type="submit"], textarea {
+            width: 100%;
+            min-height: 1em;
+            height: 3.75em;
+            font-family: "Calibri", "Times New Roman", serif;
+            padding: 1em;
+            box-sizing: border-box;
+            overflow: hidden;
+            resize: none;
+        }
+        input[type="submit"] {}
+        input[type="submit"][disabled] {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<h1>Sausage Crypto</h1>
+<form id="encrypt_decrypt" action="./crypt.php" method="post" enctype="multipart/form-data">
+    <label for="to_encrypt">Decrypted</label>
+    <textarea id="to_encrypt" name="to_encrypt"></textarea>
+    <label for="to_decrypt">Encrypted</label>
+    <textarea id="to_decrypt" name="to_decrypt"></textarea>
+    <input id="submit" type="submit" name="submit" value="Encrypt/Decrypt" />
+</form>
+</body>
+</html>
+
